@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+// @ts-ignore
 import { Octokit } from '@octokit/action'
 
 /**
@@ -12,17 +13,23 @@ export async function run(): Promise<void> {
     })
 
     const repository = core.getInput('repository')
-    const owner = repository.substring(0, repository.indexOf("/"))
-    const repo = repository.substring(repository.indexOf("/") + 1, repository.length - 1)
+    const owner = repository.substring(0, repository.indexOf('/'))
+    const repo = repository.substring(
+      repository.indexOf('/') + 1,
+      repository.length - 1
+    )
     core.info(`Resolved owner = ${owner}, repo = ${repo}`)
 
-    const runners = await octokit.request('GET /repos/{owner}/{repo}/actions/runners', {
-      owner: owner,
-      repo: repo,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
+    const runners = await octokit.request(
+      'GET /repos/{owner}/{repo}/actions/runners',
+      {
+        owner: owner,
+        repo: repo,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
       }
-    })
+    )
     core.info(`${JSON.stringify(runners)}`)
 
     // Set outputs for other workflow steps to use
