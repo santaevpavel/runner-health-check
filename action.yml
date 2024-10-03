@@ -11,7 +11,7 @@ inputs:
     description: 'Repository name with owner. For example, actions/checkout'
     default: ${{ github.repository }}
   token:
-    description: 'A github token. It's used to access list of runners for a repository'
+    description: 'A github token. It is used to access list of runners for a repository'
     default: ${{ github.token }}
   labels:
     description: 'List of labels to look for runners'
