@@ -1,23 +1,28 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Github Runner Health Check'
+description: 'Github Runner Health Check'
+author: 'Santaev Pavel'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
   icon: 'heart'
   color: 'red'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
-    required: true
-    default: '1000'
-
-# Define your outputs here.
+  repository:
+    description: 'Repository name with owner. For example, actions/checkout'
+    default: ${{ github.repository }}
+  token:
+    description: 'A github token. It's used to access list of runners for a repository'
+    default: ${{ github.token }}
+  labels:
+    description: 'List of labels to look for runners'
+    default: '{ "self-hosted" }'
 outputs:
-  time:
-    description: 'Your output description here'
+  number-all-runners:
+    description: 'Number of all added runners for a repository'
+  number-online-runners:
+    description: 'Number of online runners for a repository'
+  number-offline-runners:
+    description: 'Number of offline runners for a repository'
 
 runs:
   using: node20

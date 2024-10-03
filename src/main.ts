@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { Octokit } from '@octokit/action'
 
 /**
  * The main function for the action.
@@ -7,18 +7,28 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const octokit = new Octokit({
+      auth: core.getInput('token')
+    })
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    const repository = core.getInput('repository')
+    const owner = repository.substring(0, repository.indexOf("/"))
+    const repo = repository.substring(repository.indexOf("/") + 1, repository.length - 1)
+    core.info(`Resolved owner = ${owner}, repo = ${repo}`)
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const runners = await octokit.request('GET /repos/{owner}/{repo}/actions/runners', {
+      owner: owner,
+      repo: repo,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    core.info(`${JSON.stringify(runners)}`)
 
     // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    core.setOutput('number-all-runners', 0)
+    core.setOutput('number-online-runners', 0)
+    core.setOutput('number-offline-runners', 0)
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
