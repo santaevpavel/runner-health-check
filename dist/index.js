@@ -51131,7 +51131,7 @@ async function run() {
         });
         const repository = core.getInput('repository');
         const owner = repository.substring(0, repository.indexOf('/'));
-        const repo = repository.substring(repository.indexOf('/') + 1, repository.length - 1);
+        const repo = repository.substring(repository.indexOf('/') + 1, repository.length);
         core.info(`Resolved owner = ${owner}, repo = ${repo}`);
         const runners = await octokit.request('GET /repos/{owner}/{repo}/actions/runners', {
             owner: owner,
